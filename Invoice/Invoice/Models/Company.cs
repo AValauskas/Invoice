@@ -17,6 +17,7 @@ namespace Invoice.Models
             
         }
 
+        public Company() { }
         public virtual Company GetCompany() {
 
             var client = new Company("356566", "Company", "UAB corp", "Spain", 30, "gonzaghes 37", false, true);

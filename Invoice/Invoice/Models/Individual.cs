@@ -17,6 +17,7 @@ namespace Invoice.Models
 
         }
 
+        public Individual() { }
         public virtual Individual GetPerson()
         {
 

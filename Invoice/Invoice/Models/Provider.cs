@@ -25,6 +25,7 @@ namespace Invoice.Models
 
         public bool VATPayer { get; set; }
 
+        public Provider() { }
 
 
         public Provider(string name, string country, int countryVAT, string adress, string providerCode, bool VATPayer)

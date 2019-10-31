@@ -20,7 +20,7 @@ namespace Invoice.Controllers
 
             Company company1 = company.GetCompany();
 
-            double price = provider.getPrice();
+           double price = provider.getPrice();
 
             InvoiceW invoice = new InvoiceW();
 
