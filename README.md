@@ -1,1 +1,1 @@
-# Invoice
+yra dvi programos: konsolinė versija, pirminis tikrinimas funkcionalumo, pvm skaičiavimo ir ASP.NET core, kuris nieko neatvaizduoja, tik turi funkcijas skirtas apskaičiuot PVM, pagal tai ar juridinis, ar individualus žmogus, taip pat yra paruoštas testavimas, konsolinei aplinkai ir atskirai su mock'ais jau asp.net aplinkai. Duombazės ir gilesnė logika deja liko nebeįgyvendinta. 
