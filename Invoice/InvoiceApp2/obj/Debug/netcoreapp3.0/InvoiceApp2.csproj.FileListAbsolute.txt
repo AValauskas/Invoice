@@ -1,0 +1,11 @@
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.exe
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.deps.json
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.runtimeconfig.json
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.runtimeconfig.dev.json
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.dll
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\bin\Debug\netcoreapp3.0\InvoiceApp2.pdb
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\obj\Debug\netcoreapp3.0\InvoiceApp2.csprojAssemblyReference.cache
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\obj\Debug\netcoreapp3.0\InvoiceApp2.AssemblyInfoInputs.cache
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\obj\Debug\netcoreapp3.0\InvoiceApp2.AssemblyInfo.cs
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\obj\Debug\netcoreapp3.0\InvoiceApp2.dll
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\InvoiceApp2\obj\Debug\netcoreapp3.0\InvoiceApp2.pdb
