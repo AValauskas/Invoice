@@ -19,7 +19,7 @@ namespace InvoiceTests
 
             var provider = new Provider("UAB tiekëjas",new Country ("LT", 21), new Company("Company"));
 
-            var customer = new Customer("Customer", new Country("ZE", 26), new Company("Customer Company"));
+            var customer = new Customer("Customer", new Country("ZE", 26), false);
 
             var order = new Order(15);
 
