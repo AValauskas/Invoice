@@ -10,13 +10,15 @@ namespace Invoice.Begin.Calculate
     public class Calculator: IInvoiceCalculator
     {
         //Kompanija yra PVM mokėtoja
-        public double Calculate(Customer customer, Provider provider, Order order) {
+        public double Calculate(Customer customer, Provider provider, Order order, IIsEuropeanUnion isEu) {
 
             double sum;
             int VAT = 0;
-           IIsEuropeanUnion isEu = new IsEuropean();
-            bool isCustomerEU = isEu.IsEurope(customer.GetCountry().GetName());
+          //  isEu = new IsEuropean();
+            string cusname = customer.GetCountry().GetName();
+            bool isCustomerEU = isEu.IsEurope(cusname);
             bool isProviderEU = isEu.IsEurope(provider.GetCountry().GetName());
+            
 
             if (provider.GetCompany() == null)  //Nežinau ar tikslinga, nes Įmonė visada moka PVM mokesčius
             {
@@ -37,7 +39,7 @@ namespace Invoice.Begin.Calculate
                         }
                     }
                     else {
-                        if (customer.GetCountry().GetName()== provider.GetCountry().GetName())
+                        if (customer.GetCountry().GetName() == provider.GetCountry().GetName())
                         {
                             VAT = 0;
                         }
@@ -50,7 +52,7 @@ namespace Invoice.Begin.Calculate
             }
 
             sum = order.GetPrice() + order.GetPrice() / 100 * VAT;
-            return 0;
+            return VAT;
 
         }
 

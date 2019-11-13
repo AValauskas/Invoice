@@ -25,20 +25,20 @@ namespace InvoiceTests
 
 
 
-            var providerTasks = Substitute.For<Provider>();
-            var customerTasks = Substitute.For<Customer>();
+          //  var providerTasks = Substitute.For<Provider>();
+          //  var customerTasks = Substitute.For<Customer>();
             var IsEU = Substitute.For<IIsEuropeanUnion>();
 
             
-            providerTasks.GetCountry().Returns(new Country("LT",21));
-            customerTasks.GetCountry().Returns(new Country("ZE", 26));
+           // providerTasks.GetCountry().Returns(new Country("LT",21));
+            //.GetCountry().Returns(new Country("ZE", 26));
 
             IsEU.IsEurope("LT").Returns(true);
-            IsEU.IsEurope("ZE").Returns(false);
+            IsEU.IsEurope("ZE").Returns(true);
 
-            double VAT = invoice.Calculate(customer, provider, order);
-           // Assert.Equal(0, VAT, 0);
-              Assert.True(IsEU.IsEurope("LT"));
+            double VAT = invoice.Calculate(customer, provider, order, IsEU);
+            Assert.Equal(26, VAT, 0);
+             // Assert.True(IsEU.IsEurope("LT"));
         }
         /*
         [Fact]

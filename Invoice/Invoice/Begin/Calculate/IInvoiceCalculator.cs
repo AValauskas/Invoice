@@ -9,6 +9,6 @@ namespace Invoice.Begin.Calculate
 {
     public interface IInvoiceCalculator 
     {
-        public double Calculate(Customer customer, Provider provider, Order order);
+        public double Calculate(Customer customer, Provider provider, Order order, IIsEuropeanUnion isEu);
     }
 }

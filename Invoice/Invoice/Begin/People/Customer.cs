@@ -17,7 +17,7 @@ namespace Invoice.Begin.People
         {
             this.doesdoesIndividualAction = doesIndividualAction;
         }
-        //public Customer() { }
+        public Customer() { }
 
         public bool GetIfIndividualAction() 
         { 

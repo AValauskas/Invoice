@@ -17,9 +17,9 @@ namespace Invoice.Begin.Invoice
             Customer customer = new Customer("customer", new Country("LT", 21), new Company("Kompanija"));
             Provider provider = new Provider("provider", new Country("LT", 21), new Company("ProviderCompany"));
             Order order = new Order(15);
-            //IIsEuropeanUnion euro = new IsEuropean(); 
+            IIsEuropeanUnion euro = new IsEuropean(); 
             IInvoiceCalculator icalculator = new Calculator();
-            var some = icalculator.Calculate(customer,provider,order);
+            var some = icalculator.Calculate(customer,provider,order, euro);
 
             return some;
         }

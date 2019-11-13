@@ -11,6 +11,6 @@ namespace Invoice.Begin.People
         { 
         
         }
-        //public Provider() { }
+        public Provider() { }
     }
 }

@@ -27,7 +27,7 @@ namespace Invoice.Begin.People
             this.company = null;
             //  this.IsVatPayer = isVatPayer;
         }
-      //  public Person{}
+        public Person(){}
         public string GetName()
         {
             return this.name;
