@@ -14,12 +14,12 @@ namespace Invoice.Begin.Invoice
     {
         public double Calculate()
         {
-            Customer customer = new Customer("customer", new Country("LT", 21), new Company("Kompanija"));
-            Provider provider = new Provider("provider", new Country("LT", 21), new Company("ProviderCompany"));
+            Customer customer = new Customer(new Country("LT", 21), new Company("Kompanija"));
+            Provider provider = new Provider(new Country("LT", 21), new Company("ProviderCompany"));
             Order order = new Order(15);
-            IIsEuropeanUnion euro = new IsEuropean(); 
-            IInvoiceCalculator icalculator = new Calculator();
-            var some = icalculator.Calculate(customer,provider,order, euro);
+            IInvoiceCalculator invoiceCalulate = new InvoiceCalculator();
+            invoiceCalulate.CountryProvider = new CountryInfoProvider();
+            var some = invoiceCalulate.Calculate(customer,provider,order);
 
             return some;
         }

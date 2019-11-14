@@ -105,6 +105,8 @@ C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\net
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Invoice.runtimeconfig.dev.json
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Invoice.dll
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Invoice.pdb
-C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.dll
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.pdb
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\System.Net.Http.Formatting.dll
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Newtonsoft.Json.Bson.dll
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.MvcApplicationPartsAssemblyInfo.cache

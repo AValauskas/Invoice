@@ -12,234 +12,134 @@ namespace InvoiceTests
     public class InvoiceVatPriceTestsIntern
     {
         [Fact]
-        public void Provider_IS_VAT_Payer_Client_lives_outside_EU_return_0()
+        public void Provider_IS_VAT_Payer_Client_lives_outside_EU_return_50()
         {
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            IInvoiceCalculator invoice = new Calculator();
+            var provider = new Provider(new Country ("LT", 21), new Company("Company"));
+            var customer = new Customer("Customer", new Country("ZE", 25), false);
+            var order = new Order(50);
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+            invoice.CountryProvider.IsEurope("ZE").Returns(false);
 
-            var provider = new Provider("UAB tiekëjas",new Country ("LT", 21), new Company("Company"));
-
-            var customer = new Customer("Customer", new Country("ZE", 26), false);
-
-            var order = new Order(15);
-
-
-
-          //  var providerTasks = Substitute.For<Provider>();
-          //  var customerTasks = Substitute.For<Customer>();
-            var IsEU = Substitute.For<IIsEuropeanUnion>();
-
-            
-           // providerTasks.GetCountry().Returns(new Country("LT",21));
-            //.GetCountry().Returns(new Country("ZE", 26));
-
-            IsEU.IsEurope("LT").Returns(true);
-            IsEU.IsEurope("ZE").Returns(true);
-
-            double VAT = invoice.Calculate(customer, provider, order, IsEU);
-            Assert.Equal(26, VAT, 0);
-             // Assert.True(IsEU.IsEurope("LT"));
+            Assert.Equal(50, invoice.Calculate(customer, provider, order), 0);
         }
-        /*
+        
         [Fact]
-        public void ProviderControler_WriteInvoiceCompany_Provider_is_VAT_Payer_Client_NOT_EU_Return_0()
+        public void Provider_IS_VAT_Payer_Client_lives_outside_EU_return_1500()
         {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var client = new Company("356566", "company", "JA klientas", "Spain", 30, "Paðilës 37", false, true);
-
-            double price = 100;
-
-            var providertasks = Substitute.For<Provider>();
-            var companytasks = Substitute.For<Company>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            companytasks.GetCompany().Returns(client);
-            double PVM = provController.WriteInvoiceCompany(providertasks, companytasks);
-
-            Assert.Equal(0, PVM, 0);
+            var provider = new Provider(new Country("DE", 19), new Company("Company"));
+            var customer = new Customer(new Country("JAV", 11), new Company("comp"));
+            var order = new Order(1500);
+            var infoprovider = Substitute.For<ICountryInfoProvider>();
+            infoprovider.IsEurope("DE").Returns(true);
+            infoprovider.IsEurope("JAV").Returns(false);
+            invoice.CountryProvider = infoprovider;
+            Assert.Equal(1500, invoice.Calculate(customer, provider, order), 0);
         }
+
+
+        
+        //---------------------------------------------------------------------------------------------------
         [Fact]
-        public void ProviderControler_WriteInvoiceCompany_Provider_is_VAT_Payer_Client_Lives_EU_NOT_VAT_Payer_Diffirent_Country_Return_21()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_25()
         {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var client = new Company("356566", "company", "comp", "Spain", 30, "Paðilës 37", true, false);
+            var provider = new Provider(new Country("LT", 21), new Company("Company"));
+            var customer = new Customer("Customer", new Country("SE", 25), false);
+            var order = new Order(20);
 
-            double price = 100;
-
-
-            var providertasks = Substitute.For<Provider>();
-            var companytasks = Substitute.For<Company>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            companytasks.GetCompany().Returns(client);
-            double PVM = provController.WriteInvoiceCompany(providertasks, companytasks);
-
-            Assert.Equal(21, PVM, 0);
+            invoice.CountryProvider= Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+            invoice.CountryProvider.IsEurope("SE").Returns(true);
+            Assert.Equal(25, invoice.Calculate(customer, provider, order), 0);
         }
+        
         [Fact]
-        public void ProviderControler_WriteInvoiceCompany_Provider_is_VAT_Payer_Client_Lives_EU_IS_VAT_Payer_Diffirent_Country_Return_0()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_2460()
         {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var client = new Company("356566", "company", "JA klientas", "Spain", 30, "Paðilës 37", true, true);
+            var provider = new Provider(new Country("LT", 21), new Company("Company"));
+            var customer = new Customer("Customer", new Country("FL", 23), false);
+            var order = new Order(2000);
 
-            double price = 100;
-
-
-            var providertasks = Substitute.For<Provider>();
-            var companytasks = Substitute.For<Company>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            companytasks.GetCompany().Returns(client);
-            double PVM = provController.WriteInvoiceCompany(providertasks, companytasks);
-
-            Assert.Equal(0, PVM, 0);
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+            invoice.CountryProvider.IsEurope("FL").Returns(true);
+            Assert.Equal(2460, invoice.Calculate(customer, provider, order), 0);
         }
+        //-------------------------------------------------------------------------------------
+        
         [Fact]
-        public void ProviderControler_WriteInvoiceCompany_Provider_is_VAT_Payer_Lives_Same_Country_Return_21()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_pay_VAT_Different_countries_return_1000()
         {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var client = new Company("356566", "company", "JA klientas", "Lithuania", 21, "Paðilës 37", true, true);
+            var provider = new Provider(new Country("LT", 21), new Company("Company"));
+            var customer = new Customer(new Country("SE", 25), new Company("Customer company"));
+            var order = new Order(1000);
 
-            double price = 100;
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+            invoice.CountryProvider.IsEurope("SE").Returns(true);
 
 
-            var providertasks = Substitute.For<Provider>();
-            var companytasks = Substitute.For<Company>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            companytasks.GetCompany().Returns(client);
-            double PVM = provController.WriteInvoiceCompany(providertasks, companytasks);
-
-            Assert.Equal(21, PVM, 0);
+            Assert.Equal(1000, invoice.Calculate(customer, provider, order), 0);
         }
-
-
-
-
-
-
 
         [Fact]
-        public void ProviderControler_WriteInvoiceIndividual_Provider_Not_VAT_Payer_Return0()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_pay_VAT_Different_countries_return_5000()
         {
-            ProviderController provController = new ProviderController();
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", false);
+            var provider = new Provider( new Country("LT", 21), new Company("Company"));
+            var customer = new Customer("Customer", new Country("FL", 23), true);
+            var order = new Order(5000);
 
-            var client = new Individual("356566", "individual", "uab Rab", "Spain", 30, "37", true, true);
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+            invoice.CountryProvider.IsEurope("FL").Returns(true);
 
-            double price = 100;
-            var providertasks = Substitute.For<Provider>();
-            var personTasks = Substitute.For<Individual>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            personTasks.GetPerson().Returns(client);
-
-            double PVM = provController.WriteInvoiceIndividual(providertasks, personTasks);
-
-            Assert.Equal(0, PVM, 0);
+            Assert.Equal(5000, invoice.Calculate(customer, provider, order), 0);
         }
+
+        //-------------------------------------------------------------------------
+        
+[Fact]
+public void Provider_IS_VAT_Payer_Client_lives_IN_EU_pay_VAT_Same_countries_return_1210()
+{
+    IInvoiceCalculator invoice = new InvoiceCalculator();
+
+    var provider = new Provider(new Country("LT", 21), new Company("Company"));
+    var customer = new Customer(new Country("LT", 21), new Company("Customer company"));
+    var order = new Order(1000);
+
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("LT").Returns(true);
+
+    Assert.Equal(1210, invoice.Calculate(customer, provider, order), 0);
+}
+        
         [Fact]
-        public void ProviderControler_WriteInvoiceIndividual_Provider_is_VAT_Payer_Client_NOT_EU_Return_0()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_pay_VAT_Same_countries_return_7320()
         {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
+            IInvoiceCalculator invoice = new InvoiceCalculator();
 
-            var client = new Individual("356566", "individual", "JA klientas", "Spain", 30, "Paðilës 37", false, true);
+            var provider = new Provider(new Country("IT", 22), new Company("Company"));
+            var customer = new Customer(new Country("IT", 22), new Company("Customer company"));
+            var order = new Order(6000);
 
-            double price = 100;
-            var providertasks = Substitute.For<Provider>();
-            var personTasks = Substitute.For<Individual>();
+            invoice.CountryProvider = Substitute.For<ICountryInfoProvider>();
+            invoice.CountryProvider.IsEurope("IT").Returns(true);
 
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            personTasks.GetPerson().Returns(client);
-
-            double PVM = provController.WriteInvoiceIndividual(providertasks, personTasks);
-
-            Assert.Equal(0, PVM, 0);
-        }
-        [Fact]
-        public void ProviderControler_WriteInvoiceIndividual_Provider_is_VAT_Payer_Client_Lives_EU_NOT_VAT_Payer_Diffirent_Country_Return_21()
-        {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
-
-            var client = new Individual("356566", "individual", "comp", "Spain", 30, "Paðilës 37", true, false);
-
-            double price = 100;
-            var providertasks = Substitute.For<Provider>();
-            var personTasks = Substitute.For<Individual>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            personTasks.GetPerson().Returns(client);
-
-            double PVM = provController.WriteInvoiceIndividual(providertasks, personTasks);
-
-            Assert.Equal(21, PVM, 0);
-        }
-        [Fact]
-        public void ProviderControler_WriteInvoiceIndividual_Provider_is_VAT_Payer_Client_Lives_EU_IS_VAT_Payer_Diffirent_Country_Return_0()
-        {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
-
-            var client = new Individual("356566", "individual", "JA klientas", "Spain", 30, "Paðilës 37", true, true);
-
-            double price = 100;
-
-
-            var providertasks = Substitute.For<Provider>();
-            var personTasks = Substitute.For<Individual>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            personTasks.GetPerson().Returns(client);
-
-            double PVM = provController.WriteInvoiceIndividual(providertasks, personTasks);
-
-            Assert.Equal(0, PVM, 0);
-        }
-        [Fact]
-        public void ProviderControler_WriteInvoiceIndividual_Provider_is_VAT_Payer_Lives_Same_Country_Return_21()
-        {
-            ProviderController provController = new ProviderController();
-            var provider = new Provider("UAB tiekëjas", "Lithuania", 21, "Kaunas", "326461131313", true);
-
-            var client = new Individual("356566", "individual", "JA klientas", "Lithuania", 21, "Paðilës 37", true, true);
-
-            double price = 100;
-
-
-            var providertasks = Substitute.For<Provider>();
-            var personTasks = Substitute.For<Individual>();
-
-            providertasks.Login().Returns(provider);
-            providertasks.getPrice().Returns(100);
-            personTasks.GetPerson().Returns(client);
-
-            double PVM = provController.WriteInvoiceIndividual(providertasks, personTasks);
-
-            Assert.Equal(21, PVM, 0);
+            Assert.Equal(7320, invoice.Calculate(customer, provider, order), 0);
         }
 
-
-
-    }
-    */
+        
     }
 }

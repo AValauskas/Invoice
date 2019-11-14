@@ -6,7 +6,7 @@ using Invoice.Begin.People;
 
 namespace Invoice.Begin.Union
 {
-    public interface IIsEuropeanUnion
+    public interface ICountryInfoProvider
     {
         public abstract bool IsEurope(string country);
 

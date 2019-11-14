@@ -7,8 +7,9 @@ using Invoice.Begin.Union;
 
 namespace Invoice.Begin.Calculate
 {
-    public interface IInvoiceCalculator 
+    public interface IInvoiceCalculator
     {
-        public double Calculate(Customer customer, Provider provider, Order order, IIsEuropeanUnion isEu);
+        public ICountryInfoProvider CountryProvider { get; set; }
+        public double Calculate(Customer customer, Provider provider, Order order);
     }
 }

@@ -7,21 +7,26 @@ namespace Invoice.Begin.People
 {
     public class Customer : Person
     {
+        private string name;
         private bool doesdoesIndividualAction;
-        public Customer(string name, Country country, Company company) : base(name, country, company)
+        public Customer(Country country, Company company) : base(country, company)
         {
             this.doesdoesIndividualAction = false;
         }
 
-        public Customer(string name, Country country, bool doesIndividualAction) : base(name, country)
+        public Customer(string name, Country country, bool doesIndividualAction) : base(country)
         {
             this.doesdoesIndividualAction = doesIndividualAction;
+            this.name = name;
         }
         public Customer() { }
 
         public bool GetIfIndividualAction() 
         { 
         return doesdoesIndividualAction;
+        }
+        public string GetName() {
+            return this.name;
         }
     }
 }
