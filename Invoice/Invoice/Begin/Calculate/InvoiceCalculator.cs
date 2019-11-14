@@ -14,15 +14,31 @@ namespace Invoice.Begin.Calculate
 
         public double Calculate(Customer customer, Provider provider, Order order)
         {
+            bool isCustomerEU = false;
             double sum;
             int VAT = 0;
-            bool isCustomerEU = CountryProvider.IsEurope(customer.GetCountry().GetName());
-            bool isProviderEU = CountryProvider.IsEurope(provider.GetCountry().GetName());
+            try
+            {
+                 isCustomerEU = CountryProvider.IsEurope(customer.GetCountry().GetName());
+                bool isProviderEU = CountryProvider.IsEurope(provider.GetCountry().GetName());
+            }
+            catch (System.NullReferenceException ex)
+            {
+                throw new System.ArgumentNullException(
+           "Parameter index is out of range.", ex);
+            }
+            finally {
+                sum = 0;
+                
+            }
 
-             if (provider.GetCompany() == null)  //Nežinau ar tikslinga, nes Įmonė visada moka PVM mokesčius
-         {
+
+           
+
+            if (provider.GetCompany() == null)  //Nežinau ar tikslinga, nes Įmonė visada moka PVM mokesčius
+            {
              VAT = 0;
-         }
+              }
          else {
              if (isCustomerEU == false)
              {
