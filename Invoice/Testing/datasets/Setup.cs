@@ -6,7 +6,7 @@ using Invoice.Begin.People;
 namespace Testing.datasets
 {
     class Setup
-    {
+    {/*
         //Providers
         public static Provider ProviderIsVATPayerFomLT =  new Provider(new Country("LT", 21), new Company("Company"));
         
@@ -36,7 +36,7 @@ namespace Testing.datasets
         //customer in eu dont pay VAT
         public static Customer CustomerInEUSE= new Customer("Customer", new Country("SE", 25), false);
         
-        public static Customer CustomerInEUFL=new Customer("Customer", new Country("FL", 23), false);
+        public static Customer CustomerInEUFL=new Customer("Customer", new Country("FL", 23), false);*/
         
     }
 }

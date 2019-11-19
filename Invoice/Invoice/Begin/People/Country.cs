@@ -8,11 +8,11 @@ namespace Invoice.Begin.People
     public class Country
     {
         private string name { get; set; }
-        private int VAT { get; set; }
-        public Country(string name, int VAT)
+      //  private int VAT { get; set; }
+        public Country(string name)
         {
             this.name = name;
-            this.VAT = VAT;
+           // this.VAT = VAT;
         }
 
         public string GetName()
@@ -20,9 +20,9 @@ namespace Invoice.Begin.People
             return this.name;
         }
 
-        public int GetVAT()
+       /* public int GetVAT()
         {
             return this.VAT;
-        }
+        }*/
     }
 }

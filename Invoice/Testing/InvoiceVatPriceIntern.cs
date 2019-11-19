@@ -10,18 +10,48 @@ using Testing.datasets;
 
 namespace Testing
 {
-
+  
 
     public class InvoiceVatPriceIntern : IDisposable
     {
-       
-             [Fact]
+        //Providers
+        public readonly Provider ProviderIsVATPayerFomLT = new Provider(new Country("LT"), new Company("Company"));
+
+        public readonly Provider ProviderIsVATPayerFomIT = new Provider(new Country("IT"), new Company("Company"));
+
+        public readonly Provider ProviderIsVATPayerFomDE = new Provider(new Country("DE"), new Company("Company"));
+
+
+
+        //Customer outside EU
+        public readonly Customer CustomerOutsideEUZE = new Customer("Customer", new Country("ZE"), false);
+
+        public readonly Customer CustomerOutsideEUJAV = new Customer(new Country("JAV"), new Company("comp"));
+
+
+
+        //Customer in EU Pay VAT
+        public readonly Customer CustomerInEUSEPayVAT = new Customer(new Country("SE"), new Company("Customer company"));
+
+        public readonly Customer CustomerInEUFLPayVAT = new Customer(new Country("FL"), new Company("Customer company"));
+
+        public readonly Customer CustomerInEULTPayVAT = new Customer(new Country("LT"), new Company("Customer company"));
+
+        public readonly Customer CustomerInEUITPayVAT = new Customer(new Country("IT"), new Company("Customer company"));
+
+
+        //customer in eu dont pay VAT
+        public readonly Customer CustomerInEUSE = new Customer("Customer", new Country("SE"), false);
+
+        public readonly Customer CustomerInEUFL = new Customer("Customer", new Country("FL"), false);
+        /*
+        [Fact]
         public void Provider_IS_VAT_Payer_Client_lives_outside_EU_return_50()
         {
             var calculator = new InvoiceCalculator();
             //   CustomerOrderServiceTests cus= new CustomerOrderServiceTests();
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerOutsideEUZE;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerOutsideEUZE;
             var order = new Order(50);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -38,8 +68,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomDE;
-            var customer = Setup.CustomerOutsideEUJAV;
+            var provider = ProviderIsVATPayerFomDE;
+            var customer = CustomerOutsideEUJAV;
             var order = new Order(1500);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -59,8 +89,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEUSE;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEUSE;
             var order = new Order(20);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -77,8 +107,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEUFL;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEUFL;
             var order = new Order(2000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -95,8 +125,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEUFL;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEUFL;
             var order = new Order(2000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -114,8 +144,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEUSEPayVAT;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEUSEPayVAT;
             var order = new Order(1000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -132,8 +162,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEUFLPayVAT;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEUFLPayVAT;
             var order = new Order(5000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -152,8 +182,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomLT;
-            var customer = Setup.CustomerInEULTPayVAT;
+            var provider = ProviderIsVATPayerFomLT;
+            var customer = CustomerInEULTPayVAT;
             var order = new Order(1000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -170,8 +200,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomIT;
-            var customer = Setup.CustomerInEUITPayVAT;
+            var provider = ProviderIsVATPayerFomIT;
+            var customer = CustomerInEUITPayVAT;
             var order = new Order(6000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -186,8 +216,8 @@ namespace Testing
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomIT;
-            var customer = Setup.CustomerInEUITPayVAT;
+            var provider = ProviderIsVATPayerFomIT;
+            var customer = CustomerInEUITPayVAT;
             var order = new Order(6000);
 
             var mock = Substitute.For<ICountryInfoProvider>();
@@ -198,13 +228,14 @@ namespace Testing
             Assert.NotEqual(6000, result, 0);
         }
 
+        //[SetUp]
         [Fact]
         public void ICalculator_InTerface_NotGiven_null_Point_exeption()
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = Setup.ProviderIsVATPayerFomIT;
-            var customer = Setup.CustomerInEUITPayVAT;
+            var provider = ProviderIsVATPayerFomIT;
+            var customer = CustomerInEUITPayVAT;
             var order = new Order(6000);
 
              var mock = Substitute.For<ICountryInfoProvider>();
@@ -214,12 +245,12 @@ namespace Testing
 
            // var result = calculator.Calculate(customer, provider, order);
             Assert.Throws<Exception>(() => calculator.Calculate(customer, provider, order));
-        }
+        }*/
         public void Dispose()
         {
             // Clean stuff that is not needed anymore, such as things in database and etc.
         }
-
+        
     }
 
 }

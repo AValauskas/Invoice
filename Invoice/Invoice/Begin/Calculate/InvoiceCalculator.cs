@@ -11,16 +11,19 @@ namespace Invoice.Begin.Calculate
     {
         public ICountryInfoProvider CountryProvider { get; set; }
 
-
+        public IVatGetter VATGetter { get; set; }
         public double Calculate(Customer customer, Provider provider, Order order)
         {
             bool isCustomerEU = false;
             double sum;
-            int VAT = 0;
+            int VAT = 0, VATProvider, VATCustomer;
             try
             {
-                 isCustomerEU = CountryProvider.IsEurope(customer.GetCountry().GetName());
-                bool isProviderEU = CountryProvider.IsEurope(provider.GetCountry().GetName());
+                 isCustomerEU = CountryProvider.IsEurope(customer);
+                bool isProviderEU = CountryProvider.IsEurope(provider);
+                VATProvider = VATGetter.GetVAT(provider);
+                VATCustomer = VATGetter.GetVAT(customer);
+
             }
             catch (System.NullReferenceException ex)
             {
@@ -50,7 +53,7 @@ namespace Invoice.Begin.Calculate
                  {
                      if (customer.GetCountry().GetName() != provider.GetCountry().GetName())
                      {
-                         VAT = customer.GetCountry().GetVAT();
+                            VAT = VATCustomer;
                      }
                  }
                  else {
@@ -62,7 +65,7 @@ namespace Invoice.Begin.Calculate
              }
              if (customer.GetCountry().GetName() == provider.GetCountry().GetName())
              {
-                 VAT = customer.GetCountry().GetVAT();
+                    VAT = VATCustomer;
              }
          }
          sum = order.GetPrice() + order.GetPrice() / 100 * VAT;
