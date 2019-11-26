@@ -8,21 +8,28 @@ namespace Invoice.Begin.People
     public class Country
     {
         private string name { get; set; }
-      //  private int VAT { get; set; }
+       
         public Country(string name)
         {
             this.name = name;
-           // this.VAT = VAT;
         }
 
         public string GetName()
         {
             return this.name;
         }
-
-       /* public int GetVAT()
+        public override bool Equals(object obj)
         {
-            return this.VAT;
-        }*/
+            //Check for null and compare run-time types.
+            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            else
+            {
+                Country country = (Country)obj;
+                return (this.name == country.name);
+            }
+        }
     }
 }

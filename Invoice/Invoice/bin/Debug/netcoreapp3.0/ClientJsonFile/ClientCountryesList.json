@@ -1,0 +1,12 @@
+{
+  "rates": {
+    "JAV": {
+      "country": "Unated State America",
+      "standard_rate": 11
+    },
+    "ZE": {
+      "country": "Zeland",
+      "standard_rate": 18
+    }
+  }
+}

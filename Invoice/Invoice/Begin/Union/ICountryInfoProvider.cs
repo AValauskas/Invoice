@@ -8,8 +8,7 @@ namespace Invoice.Begin.Union
 {
     public interface ICountryInfoProvider
     {
-        public bool IsEurope(Provider person );
-        public bool IsEurope(Customer person);
+        public bool IsInEurope(Country country);
        
     }
 }

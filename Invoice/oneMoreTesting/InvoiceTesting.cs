@@ -1,49 +1,52 @@
 using System;
 using Xunit;
-using Invoice.Begin.Invoice;
+//using Invoice.Begin.Invoice;
 using Invoice.Begin.Calculate;
 using Invoice.Begin.People;
 using Invoice.Begin.Union;
 using NSubstitute;
-
-
+using Invoice.Begin;
 
 namespace oneMoreTesting
 {
 
-    public class UsersFixure : IDisposable
+    public class UsersFixture : IDisposable
     {
 
         //Providers
-        public static readonly Provider ProviderIsVATPayerFomLT = new Provider(new Country("LT"), new Company("Company"));
+        public static readonly Provider ProviderIsVATPayerFomLT = new Provider(new Country("LT"), new Company("Company",true));
 
-        public static readonly Provider ProviderIsVATPayerFomIT = new Provider(new Country("IT"), new Company("Company"));
+        public static readonly Provider ProviderIsVATPayerFomLTNOTVATPayer = new Provider(new Country("LT"), new Company("Company", false));
 
-        public static readonly Provider ProviderIsVATPayerFomDE = new Provider(new Country("DE"), new Company("Company"));
+        public static readonly Provider ProviderIsVATPayerFomIT = new Provider(new Country("IT"), new Company("Company", true));
 
+        public static readonly Provider ProviderIsVATPayerFomDE = new Provider(new Country("DE"), new Company("Company", true));
 
+        public static readonly Provider ProviderIsVATPayerFomJAV = new Provider(new Country("JAV"), new Company("Company", true));
 
         //Customer outside EU
-        public static readonly Customer CustomerOutsideEUZE = new Customer("Customer", new Country("ZE"), false);
+        public static readonly Customer CustomerOutsideEUZE = new Customer("Customer", new Country("ZE"));
 
-        public static readonly Customer CustomerOutsideEUJAV = new Customer(new Country("JAV"), new Company("comp"));
+        public static readonly Customer CustomerOutsideEUJAV = new Customer(new Country("JAV"), new Company("comp", true));
 
 
 
         //Customer in EU Pay VAT
-        public static readonly Customer CustomerInEUSEPayVAT = new Customer(new Country("SE"), new Company("Customer company"));
+        public static readonly Customer CustomerInEUSEPayVAT = new Customer(new Country("SE"), new Company("Customer company", true));
 
-        public static readonly Customer CustomerInEUFLPayVAT = new Customer(new Country("FL"), new Company("Customer company"));
+        public static readonly Customer CustomerInEUFLPayVAT = new Customer(new Country("FL"), new Company("Customer company", true));
 
-        public static readonly Customer CustomerInEULTPayVAT = new Customer(new Country("LT"), new Company("Customer company"));
+        public static readonly Customer CustomerInEULTPayVAT = new Customer(new Country("LT"), new Company("Customer company", true));
 
-        public static readonly Customer CustomerInEUITPayVAT = new Customer(new Country("IT"), new Company("Customer company"));
+        public static readonly Customer CustomerInEUITPayVAT = new Customer(new Country("IT"), new Company("Customer company", true));
 
+        public static readonly Customer CustomerInEULTDontPayVAT = new Customer(new Country("LT"), new Company("Customer company", false));
 
+        public static readonly Customer CustomerInEUITDontPayVAT = new Customer(new Country("IT"), new Company("Customer company", false));
         //customer in eu dont pay VAT
-        public static readonly Customer CustomerInEUSE = new Customer("Customer", new Country("SE"), false);
+        public static readonly Customer CustomerInEUSE = new Customer("Customer", new Country("SE"));
 
-        public static readonly Customer CustomerInEUFL = new Customer("Customer", new Country("FL"), false);
+        public static readonly Customer CustomerInEUFL = new Customer("Customer", new Country("FL"));
 
         public void Dispose()
         {
@@ -52,37 +55,57 @@ namespace oneMoreTesting
     }
 
 
-    public class InvoiceTesting : IClassFixture<UsersFixure>
+    public class InvoiceTesting : IClassFixture<UsersFixture>
     {
-        UsersFixure userFixture;
+        UsersFixture userFixture;
 
-        public InvoiceTesting(UsersFixure fixture)
+        public InvoiceTesting(UsersFixture fixture)
         {
             this.userFixture = fixture;
         }
-        
-      //  public MethodForMocks()
 
+        [Fact]
+        public void Provider_NOY_VAT_Payer_150()
+        {
+            var calculator = new InvoiceCalculator();
+
+            var provider = UsersFixture.ProviderIsVATPayerFomLTNOTVATPayer;
+            var customer = UsersFixture.CustomerOutsideEUZE;
+            var order = new Order(150);
+
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(false);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
+
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(25);
+            calculator.VATGetter = mockVatGetter;
+
+            var result = calculator.Calculate(customer, provider, order);
+            Assert.Equal(150, result);
+        }
 
 
         [Fact]
         public void Provider_IS_VAT_Payer_Client_lives_outside_EU_return_50()
         {
             var calculator = new InvoiceCalculator();
-            //   CustomerOrderServiceTests cus= new CustomerOrderServiceTests();
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerOutsideEUZE;
+           
+            var provider = UsersFixture.ProviderIsVATPayerFomLT;
+            var customer = UsersFixture.CustomerOutsideEUZE;
             var order = new Order(50);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(false);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(false);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(25);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(25);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(50, result);
@@ -93,20 +116,20 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomDE;
-            var customer = UsersFixure.CustomerOutsideEUJAV;
+            var provider = UsersFixture.ProviderIsVATPayerFomDE;
+            var customer = UsersFixture.CustomerOutsideEUJAV;
             var order = new Order(1500);
 
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(false);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(false);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(19);
-            MockVatGetter.GetVAT(customer).Returns(11);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(19);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(11);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(1500, result);
@@ -116,50 +139,50 @@ namespace oneMoreTesting
         
         //---------------------------------------------------------------------------------------------------
         [Fact]
-        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_25()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_121()
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerInEUSE;
-            var order = new Order(20);
+            var provider = UsersFixture.ProviderIsVATPayerFomLT;
+            var customer = UsersFixture.CustomerInEUSE;
+            var order = new Order(100);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(25);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(25);
+            calculator.VATGetter = mockVatGetter;
 
 
             var result = calculator.Calculate(customer, provider, order);
-            Assert.Equal(25, result);
+            Assert.Equal(121, result);
         }
         
         [Fact]
-        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_2460()
+        public void Provider_IS_VAT_Payer_Client_lives_IN_EU_Dont_pay_VAT_Different_countries_return_2220()
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerInEUFL;
+            var provider = UsersFixture.ProviderIsVATPayerFomJAV;
+            var customer = UsersFixture.CustomerInEUFL;
             var order = new Order(2000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(false);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(23);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(11);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(23);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
-            Assert.Equal(2460, result);
+            Assert.Equal(2220, result);
         }
         
         [Fact]
@@ -167,19 +190,19 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerInEUFL;
+            var provider = UsersFixture.ProviderIsVATPayerFomLT;
+            var customer = UsersFixture.CustomerInEUFL;
             var order = new Order(2000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(23);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(23);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.NotEqual(2000, result);
@@ -191,19 +214,19 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerInEUSEPayVAT;
+            var provider = UsersFixture.ProviderIsVATPayerFomLT;
+            var customer = UsersFixture.CustomerInEUSEPayVAT;
             var order = new Order(1000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(25);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(25);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(1000, result);
@@ -214,19 +237,19 @@ namespace oneMoreTesting
       {
           IInvoiceCalculator calculator = new InvoiceCalculator();
 
-          var provider = UsersFixure.ProviderIsVATPayerFomLT;
-          var customer = UsersFixure.CustomerInEUFLPayVAT;
+          var provider = UsersFixture.ProviderIsVATPayerFomLT;
+          var customer = UsersFixture.CustomerInEUFLPayVAT;
           var order = new Order(5000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(23);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(23);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
           Assert.Equal(5000, result);
@@ -239,19 +262,19 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomLT;
-            var customer = UsersFixure.CustomerInEULTPayVAT;
+            var provider = UsersFixture.ProviderIsVATPayerFomLT;
+            var customer = UsersFixture.CustomerInEULTPayVAT;
             var order = new Order(1000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(21);
-            MockVatGetter.GetVAT(customer).Returns(21);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(21);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(21);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(1210, result);
@@ -263,19 +286,19 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomIT;
-            var customer = UsersFixure.CustomerInEUITPayVAT;
+            var provider = UsersFixture.ProviderIsVATPayerFomIT;
+            var customer = UsersFixture.CustomerInEUITPayVAT;
             var order = new Order(6000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(22);
-            MockVatGetter.GetVAT(customer).Returns(22);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(22);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(22);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(7320, result);
@@ -286,48 +309,98 @@ namespace oneMoreTesting
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomIT;
-            var customer = UsersFixure.CustomerInEUITPayVAT;
+            var provider = UsersFixture.ProviderIsVATPayerFomIT;
+            var customer = UsersFixture.CustomerInEUITPayVAT;
             var order = new Order(6000);
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(true);
-            mockIsEuropeanUnion.IsEurope(customer).Returns(true);
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(22);
-            MockVatGetter.GetVAT(customer).Returns(22);
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(22);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(22);
+            calculator.VATGetter = mockVatGetter;
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.NotEqual(6000, result, 0);
         }
         
-        //[SetUp]
+       /* //[SetUp]
         [Fact]
         public void ICalculator_InTerface_NotGiven_null_Point_exeption()
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
-            var provider = UsersFixure.ProviderIsVATPayerFomIT;
-            var customer = UsersFixure.CustomerInEUITPayVAT;
+            var provider = UsersFixture.ProviderIsVATPayerFomIT;
+            var customer = UsersFixture.CustomerInEUITPayVAT;
             var order = new Order(6000);
 
 
-            var mockIsEuropeanUnion = Substitute.For<ICountryInfoProvider>();
-            mockIsEuropeanUnion.IsEurope(provider).Returns(X => { throw new Exception(); });
-            mockIsEuropeanUnion.IsEurope(customer).Returns(X => { throw new Exception(); });
-            calculator.CountryProvider = mockIsEuropeanUnion;
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(X => { throw new Exception(); });
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(X => { throw new Exception(); });
+            calculator.CountryProvider = mockIsInEuropeanUnion;
 
-            var MockVatGetter = Substitute.For<IVatGetter>();
-            MockVatGetter.GetVAT(provider).Returns(X => { throw new Exception(); });
-            MockVatGetter.GetVAT(customer).Returns(X => { throw new Exception(); });
-            calculator.VATGetter = MockVatGetter;
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(X => { throw new Exception(); });
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(X => { throw new Exception(); });
+            calculator.VATGetter = mockVatGetter;
 
             // var result = calculator.Calculate(customer, provider, order);
             Assert.Throws<Exception>(() => calculator.Calculate(customer, provider, order));
         }
+        */
+        [Fact]
+        public void ICalculator_InTerface_Provider_Not_EU_Exception()
+        {
+            IInvoiceCalculator calculator = new InvoiceCalculator();
+
+            var provider = UsersFixture.ProviderIsVATPayerFomJAV;
+            var customer = UsersFixture.CustomerInEUITPayVAT;
+            var order = new Order(6000);
+
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(false);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
+
+            var message = "Not Specified VATGetter";
+
+            var exception = Assert.Throws<BussinessException>(() => calculator.Calculate(customer, provider, order)); 
+            Assert.Equal(message, exception.Message);
+        }
+        [Fact]
+        public void ICalculator_InTerface_Provider_VAT_NOT_fount()
+        {
+            IInvoiceCalculator calculator = new InvoiceCalculator();
+
+            var provider = UsersFixture.ProviderIsVATPayerFomJAV;
+            var customer = UsersFixture.CustomerInEUITPayVAT;
+            var order = new Order(6000);
+
+            var mockIsInEuropeanUnion = Substitute.For<ICountryInfoProvider>();
+            mockIsInEuropeanUnion.IsInEurope(provider.GetCountry()).Returns(true);
+            mockIsInEuropeanUnion.IsInEurope(customer.GetCountry()).Returns(true);
+            calculator.CountryProvider = mockIsInEuropeanUnion;
+
+            var mockVatGetter = Substitute.For<IVatGetter>();
+            mockVatGetter.GetVAT(provider.GetCountry()).Returns(0);
+            mockVatGetter.GetVAT(customer.GetCountry()).Returns(22);
+            calculator.VATGetter = mockVatGetter;
+
+            var message = "Provider VAT were not found, edit your Country VAT list";
+
+            var exception = Assert.Throws<BussinessException>(() => calculator.Calculate(customer, provider, order));
+            Assert.Equal(message, exception.Message);
+        }
+
+
+
+
+
+       
         public void Dispose()
         {
             // Clean stuff that is not needed anymore, such as things in database and etc.

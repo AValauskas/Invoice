@@ -8,8 +8,7 @@ namespace Invoice.Begin.Union
 {
     public interface IVatGetter
     {
-        public int GetVAT(Provider person);
+        public int GetVAT(Country country);
 
-        public int GetVAT(Customer person);
     }
 }

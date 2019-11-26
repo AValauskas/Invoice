@@ -22,7 +22,6 @@ namespace Invoice.Begin.People
             this.country = country;
             this.company = null;
         }
-        public Person(){}
         public Country GetCountry()
         {
             return this.country;

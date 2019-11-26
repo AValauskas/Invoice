@@ -15,7 +15,7 @@ namespace Invoice.Begin.Union
         string URLParameter = "/rest/v2/regionalbloc/eu";
 
 
-        public bool IsEurope(Provider provider) {
+        public bool IsInEurope(Country country) {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(URL);
 
@@ -25,10 +25,10 @@ namespace Invoice.Begin.Union
             HttpResponseMessage response = client.GetAsync(URL + URLParameter).Result;
             if (response.IsSuccessStatusCode)
             {
-                var dataObjects = response.Content.ReadAsAsync<IEnumerable<Object>>().Result;
+                var dataObjects = response.Content.ReadAsAsync<IEnumerable<CountryObj>>().Result;
                 foreach (var d in dataObjects)
                 {
-                    if (d.alpha2Code == provider.GetCountry().GetName() || d.alpha3Code == provider.GetCountry().GetName())
+                    if (d.alpha2Code == country.GetName() || d.alpha3Code == country.GetName())
                     {
                         return true;
                     }
@@ -40,33 +40,7 @@ namespace Invoice.Begin.Union
             }
             return false;
         }
-
-        public bool IsEurope(Customer customer)
-        {
-            HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri(URL);
-
-            client.DefaultRequestHeaders.Accept.Add(
-           new MediaTypeWithQualityHeaderValue("application/json"));
-
-            HttpResponseMessage response = client.GetAsync(URL + URLParameter).Result;
-            if (response.IsSuccessStatusCode)
-            {
-                var dataObjects = response.Content.ReadAsAsync<IEnumerable<Object>>().Result;
-                foreach (var d in dataObjects)
-                {
-                    if (d.alpha2Code == customer.GetCountry().GetName() || d.alpha3Code == customer.GetCountry().GetName())
-                    {
-                        return true;
-                    }
-                }
-            }
-            else
-            {
-                Console.WriteLine("{0} ({1})", (int)response.StatusCode, response.ReasonPhrase);
-            }
-            return false;
-        }
+     
     }
 
 }
