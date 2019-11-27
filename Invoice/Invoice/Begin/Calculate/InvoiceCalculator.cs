@@ -13,11 +13,13 @@ namespace Invoice.Begin.Calculate
 
         public IVatGetter VATGetter { get; set; }
         public double Calculate(Customer customer, Provider provider, Order order)
-        {
-            bool isCustomerEU, isProviderEU;
-            double sum;
-            int VAT = 999, VATProvider, VATCustomer;         
+        {            
            
+
+            if (!provider.Company.IsVAT)
+            {
+                return order.Price;
+            }
 
             if (CountryProvider==null)
             {
@@ -27,31 +29,31 @@ namespace Invoice.Begin.Calculate
             {
                 throw new BussinessException("Not Specified VATGetter");
             }
+           
+            var isCustomerEU = CountryProvider.IsInEurope(customer.Country);
+            var isProviderEU = CountryProvider.IsInEurope(provider.Country);
+            var customerVAT = VATGetter.GetVAT(customer.Country);
+            var providerVAT = VATGetter.GetVAT(provider.Country);
+            int? applicableVAT = null;
 
-            isCustomerEU = CountryProvider.IsInEurope(customer.Country);
-            isProviderEU = CountryProvider.IsInEurope(provider.Country);
-            VATCustomer = VATGetter.GetVAT(customer.Country);     
-            VATProvider = VATGetter.GetVAT(provider.Country);     
-
-            if ((customer.Country == provider.Country))
+            if (customer.Country == provider.Country)
             {
-                VAT = VATCustomer;
+                applicableVAT = customerVAT;
             }
             else
             {
-                if (provider.Company.GetIFVAT() 
-                    && isCustomerEU 
-                    && (customer.Company == null || customer.Company.GetIFVAT() == false) 
-                    && customer.Country.Name != provider.Country.Name)
+                if (isCustomerEU 
+                    && (customer.Company == null || customer.Company.IsVAT == false) 
+                    && customer.Country != provider.Country)
                 {
-                    VAT = VATProvider;
-                }
-                else {
-                    VAT = 0;
+                    applicableVAT = providerVAT;
                 }
             }
-            sum = order.Price + order.Price / 100 * VAT;
-         return sum;         
+            if (applicableVAT != null)
+            {
+                return order.Price + order.Price / 100 * applicableVAT.Value;
+            }
+            return order.Price;
         }
 
     }

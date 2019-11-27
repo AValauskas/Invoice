@@ -7,16 +7,18 @@ namespace Invoice.Begin.People
 {
     public class Country
     {
-        private string name { get; set; }
+        private string code { get; set; }
        
         public Country(string name)
         {
-            this.name = name;
+            this.code = name;
+            if (name == null)
+            { throw new BussinessException("Given Country name is null"); }
         }
 
-        public string Name
+        public string Code
         {
-           get { return this.name; }
+           get { return this.code; }
         }
         public override bool Equals(object obj)
         {
@@ -30,11 +32,11 @@ namespace Invoice.Begin.People
                 return false;
             }
 
-            return (this.name == anotherCountry.Name);
+            return (this.code == anotherCountry.Code);
         }
         public override int GetHashCode()
         {
-            return Name.GetHashCode();
+            return Code.GetHashCode();
         }
 
         public static bool operator == (Country lhs, Country rhs)

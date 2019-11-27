@@ -31,7 +31,7 @@ namespace Invoice.Begin.Union
                 var dataObjects = response.Content.ReadAsAsync<RootObject>().Result;
                foreach (KeyValuePair<string, Rates> item in dataObjects.rates)
                 {
-                    if (country.Name== item.Key)
+                    if (country.Code== item.Key)
                     {
                         return  Convert.ToInt32(Convert.ToDouble(item.Value.standard_rate));
                     }
@@ -45,7 +45,7 @@ namespace Invoice.Begin.Union
                 RootObject items = JsonConvert.DeserializeObject<RootObject>(json);
                 foreach (KeyValuePair<string, Rates> item in items.rates)
                 {
-                    if (country.Name == item.Key)
+                    if (country.Code == item.Key)
                     {
                         return Convert.ToInt32(Convert.ToDouble(item.Value.standard_rate));
                     }

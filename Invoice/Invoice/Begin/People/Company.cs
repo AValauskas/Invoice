@@ -7,17 +7,22 @@ namespace Invoice.Begin.People
 {
     public class Company
     {
-        public string name { get; set; }
+        public string Name { get; set; }
         private bool ISVAT { get; set; }
 
         public Company(string name, bool ISVAT)
         {
-            this.name = name;
+            
+            if (name == null)
+            { throw new BussinessException("Given Company name is null"); }
+            if (ISVAT == null)
+            { throw new BussinessException("IT is unclear if Company is Vat payer"); }
+            this.Name = name;
             this.ISVAT = ISVAT;
         }
-        public bool GetIFVAT()
+        public bool IsVAT
         {
-            return this.ISVAT;
+          get{  return this.ISVAT;}
         }
     }
 }

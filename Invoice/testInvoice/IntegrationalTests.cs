@@ -140,5 +140,13 @@ namespace oneMoreTesting
             Assert.Equal(message, exception.Message);
         }
 
+        [Fact]
+        public void Company_name_not_given_exception()
+        {       
+            var message = "Given Company name is null";
+            var exception = Assert.Throws<BussinessException>(() => new Provider(new Country("JAV"), new Company(null, true)));
+            Assert.Equal(message, exception.Message);
+        }
+
     }
 }
