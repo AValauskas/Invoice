@@ -16,7 +16,7 @@ namespace Invoice.Begin.Calculate
         {
             bool isCustomerEU, isProviderEU;
             double sum;
-            int VAT = 0, VATProvider, VATCustomer;         
+            int VAT = 999, VATProvider, VATCustomer;         
            
 
             if (CountryProvider==null)
@@ -28,63 +28,29 @@ namespace Invoice.Begin.Calculate
                 throw new BussinessException("Not Specified VATGetter");
             }
 
-            isCustomerEU = CountryProvider.IsInEurope(customer.GetCountry());
-            isProviderEU = CountryProvider.IsInEurope(provider.GetCountry());
-            VATCustomer = VATGetter.GetVAT(customer.GetCountry());     
-            VATProvider = VATGetter.GetVAT(provider.GetCountry());
+            isCustomerEU = CountryProvider.IsInEurope(customer.Country);
+            isProviderEU = CountryProvider.IsInEurope(provider.Country);
+            VATCustomer = VATGetter.GetVAT(customer.Country);     
+            VATProvider = VATGetter.GetVAT(provider.Country);     
 
-            if (VATCustomer==0)
-            {
-                throw new BussinessException("Customer VAT were not found, edit your Country VAT list");
-            }
-            if (VATProvider == 0)
-            {
-                throw new BussinessException("Provider VAT were not found, edit your Country VAT list");
-            }
-
-            // 1 variantas
-            /*  if (provider.GetCompany() == null || provider.GetCompany().GetIFVAT() == false) 
-              {
-               VAT = 0;
-                }
-           else {
-               if (isCustomerEU == false)
-               {
-                   VAT = 0;
-               }
-               else {
-
-                   if (customer.GetCompany() == null || customer.GetCompany().GetIFVAT() == false)
-                   {
-                       if (customer.GetCountry().GetName() != provider.GetCountry().GetName())
-                       {
-                              VAT = VATProvider;
-                       }
-                   }
-                   else {
-                       if (customer.GetCountry().GetName() == provider.GetCountry().GetName())
-                       {
-                           VAT = 0;
-                       }
-                   }
-               }            
-           }
-              if (customer.GetCountry().GetName() == provider.GetCountry().GetName())
-              {
-                  VAT = VATCustomer;
-              }*/
-
-
-            //2 variantas
-            if ((customer.GetCountry().GetName() == provider.GetCountry().GetName()))
+            if ((customer.Country == provider.Country))
             {
                 VAT = VATCustomer;
             }
-            if (provider.GetCompany().GetIFVAT()==true && isCustomerEU == true && (customer.GetCompany() == null || customer.GetCompany().GetIFVAT() == false) && customer.GetCountry().GetName() != provider.GetCountry().GetName())
-            {                
-                    VAT = VATProvider;                
+            else
+            {
+                if (provider.Company.GetIFVAT() 
+                    && isCustomerEU 
+                    && (customer.Company == null || customer.Company.GetIFVAT() == false) 
+                    && customer.Country.Name != provider.Country.Name)
+                {
+                    VAT = VATProvider;
+                }
+                else {
+                    VAT = 0;
+                }
             }
-            sum = order.GetPrice() + order.GetPrice() / 100 * VAT;
+            sum = order.Price + order.Price / 100 * VAT;
          return sum;         
         }
 

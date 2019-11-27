@@ -2,7 +2,6 @@ C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\net
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\appsettings.json
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Properties\launchSettings.json
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Invoice.exe
-C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.csprojAssemblyReference.cache
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\staticwebassets\Invoice.StaticWebAssets.Manifest.cache
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\staticwebassets\Invoice.StaticWebAssets.xml
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.AssemblyInfoInputs.cache
@@ -115,3 +114,4 @@ C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\net
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Microsoft.Extensions.DependencyModel.dll
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Microsoft.Extensions.PlatformAbstractions.dll
 C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\bin\Debug\netcoreapp3.0\Nancy.dll
+C:\Users\Aurimas\Desktop\PresentConnection\Invoice\Invoice\Invoice\obj\Debug\netcoreapp3.0\Invoice.csprojAssemblyReference.cache

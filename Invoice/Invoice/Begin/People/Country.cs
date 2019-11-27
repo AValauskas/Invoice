@@ -14,22 +14,45 @@ namespace Invoice.Begin.People
             this.name = name;
         }
 
-        public string GetName()
+        public string Name
         {
-            return this.name;
+           get { return this.name; }
         }
         public override bool Equals(object obj)
         {
-            //Check for null and compare run-time types.
-            if ((obj == null) || !this.GetType().Equals(obj.GetType()))
+            return this.Equals(obj as Country);
+        }
+
+        public bool Equals(Country anotherCountry)
+        {
+            if (Object.ReferenceEquals(anotherCountry, null))
             {
                 return false;
             }
-            else
+
+            return (this.name == anotherCountry.Name);
+        }
+        public override int GetHashCode()
+        {
+            return Name.GetHashCode();
+        }
+
+        public static bool operator == (Country lhs, Country rhs)
+        {
+
+            if (Object.ReferenceEquals(lhs, null))
             {
-                Country country = (Country)obj;
-                return (this.name == country.name);
+                if (Object.ReferenceEquals(rhs, null))
+                {
+                    return true;
+                }
+                return false;
             }
+            return lhs.Equals(rhs);
+        }
+        public static bool operator !=(Country lhs, Country rhs)
+        {
+            return !(lhs == rhs);
         }
     }
 }

@@ -28,7 +28,7 @@ namespace Invoice.Begin.Union
                 var dataObjects = response.Content.ReadAsAsync<IEnumerable<CountryObj>>().Result;
                 foreach (var d in dataObjects)
                 {
-                    if (d.alpha2Code == country.GetName() || d.alpha3Code == country.GetName())
+                    if (d.alpha2Code == country.Name || d.alpha3Code == country.Name)
                     {
                         return true;
                     }

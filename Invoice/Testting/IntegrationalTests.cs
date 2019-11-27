@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading.Tasks;
+using Invoice.Begin;
 
 namespace oneMoreTesting
 {
@@ -85,7 +86,7 @@ namespace oneMoreTesting
             Assert.Equal(1210, result);
         }
         [Fact]
-        public void Provider_IS_VAT_Payer_JAV_Client_lives_EU_pay_VAT_Same_countries_return_1210()
+        public void Provider_IS_VAT_Payer_JAV_Client_lives_EU_pay_VAT_Same_countries_return_1110()
         {
             IInvoiceCalculator calculator = new InvoiceCalculator();
 
@@ -100,6 +101,26 @@ namespace oneMoreTesting
 
             var result = calculator.Calculate(customer, provider, order);
             Assert.Equal(1110, result);
+        }
+        [Fact]
+        public void ICalculator_InTerface_Customer_VAT_NOT_fount()
+        {
+            IInvoiceCalculator calculator = new InvoiceCalculator();
+
+            var provider = UsersFixture.ProviderIsVATPayerFomJAV;
+            var customer = UsersFixture.CustomerNotInList;
+            var order = new Order(6000);
+
+            ICountryInfoProvider mockIsInEuropeanUnion = new CountryInfoProvider();
+            calculator.CountryProvider = mockIsInEuropeanUnion;
+
+            IVatGetter mockVatGetter = new VATGetter();
+            calculator.VATGetter = mockVatGetter;
+
+            var message = "VAT were not found, edit your Country VAT list";
+
+            var exception = Assert.Throws<BussinessException>(() => calculator.Calculate(customer, provider, order));
+            Assert.Equal(message, exception.Message);
         }
 
     }

@@ -13,9 +13,9 @@ namespace Invoice.Begin.People
             this.price = price ;
          }
 
-        public double GetPrice() 
+        public double Price
         {
-            return this.price;
+            get { return this.price; }
         }
     }
 }

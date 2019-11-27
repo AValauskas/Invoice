@@ -5,20 +5,37 @@ using System.Threading.Tasks;
 
 namespace Invoice.Begin.People
 {
-    public class Customer : Person
+    public class Customer
     {
         private string name;
-        public Customer(Country country, Company company) : base(country, company)
+        private Country country;
+        private Company company;
+        public Customer(Country country, Company company)
         {
+            this.country = country;
+            this.company = company;
         }
 
-        public Customer(string name, Country country) : base(country)
+        public Customer(string name, Country country)
         {
+            this.country = country;
             this.name = name;
+            this.company = null;
         }
 
-        public string GetName() {
-            return this.name;
+        public string Name
+        {
+            get { return this.name; }
+        }
+
+        public Country Country
+        {
+            get { return this.country; }
+
+        }
+        public Company Company
+        {
+            get { return this.company; }
         }
     }
 }
