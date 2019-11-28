@@ -20,7 +20,7 @@ namespace Invoice.Begin.Union
             client.BaseAddress = new Uri(URL);
 
             client.DefaultRequestHeaders.Accept.Add(
-           new MediaTypeWithQualityHeaderValue("application/json"));
+            new MediaTypeWithQualityHeaderValue("application/json"));
 
             HttpResponseMessage response = client.GetAsync(URL + URLParameter).Result;
             if (response.IsSuccessStatusCode)

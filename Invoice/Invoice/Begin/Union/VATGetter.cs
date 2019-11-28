@@ -18,13 +18,12 @@ namespace Invoice.Begin.Union
 
         public int GetVAT(Country country)
         {
-            int VAT = 0;
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(URL);           
             client.DefaultRequestHeaders.Accept.Add(
-           new MediaTypeWithQualityHeaderValue("application/json"));
-
+            new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = client.GetAsync(URL + URLParameter).Result;
+
             //Checks from API only countries which are in european union
             if (response.IsSuccessStatusCode)
             {         
@@ -37,6 +36,7 @@ namespace Invoice.Begin.Union
                     }
                 }
             }
+
             //Checks our json file which we can easily edit
             using (StreamReader r = new StreamReader(Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..\\..\\..\\..\\")) + @"/Invoice/ClientJsonFile/ClientCountryesList.json"))
             {
